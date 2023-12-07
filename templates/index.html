@@ -1,0 +1,28 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>News</title>
+</head>
+
+<body class="container mt-4">
+
+  <h1 class="mb-4">Latest News</h1>
+
+  <ul class="list-group">
+    {% for row in news %}
+    <li class="list-group-item">
+      <div class="mb-2">
+        <strong>{{ row.date.strftime('%Y-%m-%d') }}</strong>
+        <span class="ml-2 badge badge-secondary">{{ row.source }}</span>
+      </div>
+      <p>{{ row.text }}</p>
+    </li>
+    {% endfor %}
+  </ul>
+
+</body>
+
+</html>

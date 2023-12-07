@@ -10,6 +10,11 @@ boto3==1.24.87
 #web
 fastapi==0.85.0
 uvicorn==0.18.3
-
+python-dotenv
+databricks-sql-connector
+Flask==2.0.2
+gunicorn
+Werkzeug==2.2.2
+requests
 
 
