@@ -120,25 +120,45 @@ def weekly_stocks_graph():
     ]
     df = pd.DataFrame(data_list)
 
+    # print(df['Price_type'].unique())
+    
     # Convert Date column to datetime format
     df["Date"] = pd.to_datetime(df["Date"])
+    
+    df1 = df[df['Price_type']=="Adj Close"]
 
     # Plotting with Plotly
-    fig = px.line(
-        df,
-        x="Date",
-        y="Price",
-        color="Instrument",
-        line_group="Price_type",
-        title="Stock Prices Over Time",
-        labels={
-            "Date": "Date",
-            "Price": "Price",
-            "Instrument": "Instrument",
-            "Price_type": "Price Type",
-        },
+    # fig = px.line(
+    #     df1,
+    #     x="Date",
+    #     y="Price",
+    #     color="Instrument",
+    #     line_group="Price_type",
+    #     title="Stock Prices Over Time",
+    #     labels={
+    #         "Date": "Date",
+    #         "Price": "Price",
+    #         "Instrument": "Instrument",
+    #         "Price_type": "Price Type",
+    #     },
+    # )
+    
+    # # Try scatter plot of `Adj Close`
+    fig = px.scatter(
+    df1,
+    x="Date",
+    y="Price",
+    color="Instrument",
+    symbol="Price_type",  # This will use different symbols for each 'Price_type'
+    title="Stock Prices Over Time",
+    labels={
+        "Date": "Date",
+        "Price": "Price",
+        "Instrument": "Instrument",
+        # "Price_type": "Price Type",
+    },
     )
-    fig.write_html("stocks_graph.html")
+    fig.write_html("static/stocks_graph.html")
 
 
 @app.route("/")
@@ -162,6 +182,6 @@ def about():
 
 
 if __name__ == "__main__":
+    weekly_stocks_graph()
     app.run(debug=True, port=9000)
-    # weekly_stocks_graph()
     # get_stocks_for_week()
