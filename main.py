@@ -8,6 +8,10 @@ from datetime import datetime, timedelta
 import pytz
 import pandas as pd
 import plotly.express as px
+import numpy as np
+from requests import request
+
+# from NewsViz import *
 
 
 load_dotenv()
@@ -92,9 +96,12 @@ def get_stocks_for_week():
         today = datetime.utcnow().replace(
             tzinfo=pytz.UTC
         )  # Make today an aware datetime
-        days_back = 7
-        week_start = today - timedelta(days=today.weekday())
-        week_end = week_start + timedelta(days=days_back)
+        days_back = 20
+        duration = timedelta(days=days_back)  # Create a timedelta object for 20 days
+        week_start = (
+            today - duration
+        )  # Subtract the timedelta from today to get the start of the week
+        week_end = today
 
         # Filter data for the closest week
         closest_week_data = [
@@ -105,10 +112,10 @@ def get_stocks_for_week():
         return closest_week_data
 
 
-def weekly_stocks_graph():
+def weekly_stocks_graph_spy(start_date, end_date):
     """Saves the graph as an HTML file"""
     # converting the data to a pandas dataframe
-    data = get_stocks_for_week()
+    data = fetch_all_stocks()
     data_list = [
         {
             "Date": row.Date,
@@ -120,45 +127,48 @@ def weekly_stocks_graph():
     ]
     df = pd.DataFrame(data_list)
 
-    # print(df['Price_type'].unique())
-    
     # Convert Date column to datetime format
     df["Date"] = pd.to_datetime(df["Date"])
-    
-    df1 = df[df['Price_type']=="Adj Close"]
 
-    # Plotting with Plotly
-    # fig = px.line(
-    #     df1,
-    #     x="Date",
-    #     y="Price",
-    #     color="Instrument",
-    #     line_group="Price_type",
-    #     title="Stock Prices Over Time",
-    #     labels={
-    #         "Date": "Date",
-    #         "Price": "Price",
-    #         "Instrument": "Instrument",
-    #         "Price_type": "Price Type",
-    #     },
-    # )
-    
+    df1 = df[df["Price_type"] == "Adj Close"]
+    df1 = df1[df1["Instrument"] == "SPY"]
+    if start_date < "2023-11-05":
+        start_date = "2023-11-05"
+    df1 = df1[(df1["Date"] >= start_date) & (df1["Date"] <= end_date)]
+
     # # Try scatter plot of `Adj Close`
-    fig = px.scatter(
-    df1,
-    x="Date",
-    y="Price",
-    color="Instrument",
-    symbol="Price_type",  # This will use different symbols for each 'Price_type'
-    title="Stock Prices Over Time",
-    labels={
-        "Date": "Date",
-        "Price": "Price",
-        "Instrument": "Instrument",
-        # "Price_type": "Price Type",
-    },
+    fig = px.line(
+        df1,
+        x="Date",
+        y="Price",
+        color="Instrument",
+        symbol="Price_type",  # This will use different symbols for each 'Price_type'
+        title="Stock Prices Over Time",
+        labels={
+            "Date": "Date",
+            "Price": "Price",
+            "Instrument": "Instrument",
+            # "Price_type": "Price Type",
+        },
     )
-    fig.write_html("static/stocks_graph.html")
+    fig.update_xaxes(
+        dtick="D1",  # Specifies that ticks should be shown every 1 day
+        tickformat="%Y-%m-%d",  # Customize date format if needed
+    )
+    fig.update_layout(xaxis=dict(range=[start_date, end_date]))
+    # fig.write_html("static/stocks_graph.html")
+    fig.show()
+
+
+def News_Cumulative_Diff_Graph(data):
+    fig = px.line(
+        data,
+        x="Date",
+        y="Cumulative_Difference",
+        labels={"value": "Percentage", "variable": "Sentiment"},
+        title="Cumulative Positive - Negative Sentiment Over Time",
+    )
+    fig.write_html("static/cumulative_news_data.html")
 
 
 @app.route("/")
@@ -175,6 +185,21 @@ def get_news(category):
     return jsonify({"articles": all_news})
 
 
+@app.route("/update_graphs")
+def update_graphs():
+    start_date = request.args.get("start")
+    end_date = request.args.get("end")
+
+    # Use start_date and end_date in your graph functions (e.g., fetch data within this date range)
+    # Example: fetch_data_within_date_range(start_date, end_date)
+    # Perform operations to update graphs based on the provided date range
+
+    # For example, assuming you have functions to update graphs based on date range
+    weekly_stocks_graph_spy(start_date, end_date)
+    # Return a response (you can provide some data if needed)
+    return jsonify({"message": "Graphs updated successfully"})
+
+
 @app.route("/about", methods=["GET"])
 def about():
     """returns study html template"""
@@ -182,6 +207,6 @@ def about():
 
 
 if __name__ == "__main__":
-    weekly_stocks_graph()
-    app.run(debug=True, port=9000)
+    weekly_stocks_graph_spy("2021-04-01", "2023-04-30")
+    # app.run(debug=True, port=9000)
     # get_stocks_for_week()

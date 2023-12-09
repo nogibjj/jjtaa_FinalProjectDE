@@ -88,7 +88,7 @@ def News_Cumulative_Diff_Graph(data):
         labels={"value": "Percentage", "variable": "Sentiment"},
         title="Cumulative Positive - Negative Sentiment Over Time",
     )
-    return fig
+    fig.write_html("static/cumulative_news_data.html")
 
 
 def News_Cumulative_Ratio_Graph(data):
