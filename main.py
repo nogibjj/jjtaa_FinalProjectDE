@@ -1,6 +1,6 @@
 from dotenv import load_dotenv
 import os
-from flask import Flask, render_template, jsonify
+from flask import Flask, render_template, jsonify, request
 from databricks import sql
 
 # import openai
@@ -9,10 +9,8 @@ import pytz
 import pandas as pd
 import plotly.express as px
 import numpy as np
-from requests import request
-
-# from NewsViz import *
-
+from collections import Counter
+import plotly.graph_objects as go
 
 load_dotenv()
 
@@ -37,8 +35,14 @@ def fetch_news():
         access_token=access_token,
     ) as connection:
         c = connection.cursor()
-        c.execute("SELECT * FROM default.news LIMIT 5;")
+        c.execute("""
+                  SELECT *
+                  FROM default.news
+                  ORDER BY RAND()
+                  LIMIT 5;
+                  """)
         result = c.fetchall()
+        c.close()
         return result
 
 
@@ -55,6 +59,8 @@ def fetch_all_news():
         c = connection.cursor()
         c.execute("SELECT * FROM default.news;")
         result = c.fetchall()
+        c.close()
+
         return result
 
 
@@ -71,6 +77,8 @@ def fetch_all_stocks():
         c = connection.cursor()
         c.execute("SELECT * FROM default.stock;")
         result = c.fetchall()
+        c.close()
+
         return result
 
 
@@ -87,6 +95,7 @@ def get_stocks_for_week():
         c = connection.cursor()
         c.execute("SELECT * FROM default.stock;")
         result = c.fetchall()
+        c.close()
         for entry in result:
             entry_date = entry["Date"]
             if isinstance(entry_date, datetime):
@@ -113,9 +122,11 @@ def get_stocks_for_week():
 
 
 def weekly_stocks_graph_spy(start_date, end_date, ticker):
-    """Saves the graph as an HTML file"""
+    """Saves the graph as an HTML file, not just spy"""
     # converting the data to a pandas dataframe
     data = fetch_all_stocks()
+    news_data = fetch_all_news()
+
     data_list = [
         {
             "Date": row.Date,
@@ -125,6 +136,57 @@ def weekly_stocks_graph_spy(start_date, end_date, ticker):
         }
         for row in data
     ]
+
+    news_data_list = [
+        {
+            "Date": row.date,
+            "Source": row.source,
+            "Text": row.text,
+            "Sentiment": row.Sentiment
+        }
+        for row in news_data
+    ]
+    news_df = pd.DataFrame(news_data_list)
+
+    # Convert Date column to datetime format
+    news_df["Date"] = pd.to_datetime(news_df["Date"])
+    unique_dates = news_df["Date"].unique()
+    # Create a new DataFrame with the desired structure
+    result_data = {"Date": unique_dates, "Positive": [], "Negative": []}
+
+    # Count the occurrences of 'Positive' and 'Negative' for each unique date
+    for date in unique_dates:
+        sentiment_counts = Counter(news_df[news_df["Date"] == date]["Sentiment"])
+        result_data["Positive"].append(sentiment_counts.get("POSITIVE", 0))
+        result_data["Negative"].append(sentiment_counts.get("NEGATIVE", 0))
+
+    result_df = pd.DataFrame(result_data)
+
+    # Calculate cumulative sums for 'Positive' and 'Negative'
+    result_df["Cumulative_Positive"] = result_df["Positive"].cumsum()
+    result_df["Cumulative_Negative"] = result_df["Negative"].cumsum()
+
+    result_df["Pos-Neg"] = result_df["Positive"] - result_df["Negative"]
+
+    result_df["Cumulative_Difference"] = result_df["Pos-Neg"].cumsum()
+    # update later lol
+    if start_date < "2023-11-05":
+        start_date = "2023-11-05"
+    if end_date < "2023-11-05":
+        end_date = "2023-11-11"
+
+    result_df = result_df[(result_df["Date"] >= start_date) & 
+                          (result_df["Date"] <= end_date)]
+    
+    result_df_melted = pd.melt(
+        result_df,
+        id_vars=["Date"],
+        value_vars=["Positive", "Negative"],
+        var_name="Sentiment",
+        value_name="Count",
+    )
+
+
     df = pd.DataFrame(data_list)
 
     # Convert Date column to datetime format
@@ -132,33 +194,39 @@ def weekly_stocks_graph_spy(start_date, end_date, ticker):
 
     df1 = df[df["Price_type"] == "Adj Close"]
     df1 = df1[df1["Instrument"] == ticker]
-    if start_date < "2023-11-05":
-        start_date = "2023-11-05"
-    if end_date < "2023-11-05":
-        end_date = "2023-11-11"
     df1 = df1[(df1["Date"] >= start_date) & (df1["Date"] <= end_date)]
-
-    # # Try scatter plot of `Adj Close`
+    print(df1)
+    sentiment_percentages = result_df_melted.pivot(index="Date", columns="Sentiment", values="Count")
+    df1 = pd.merge(df1, sentiment_percentages, how="left", left_on="Date", right_index=True)
+    print(df1.columns)
+    # Print column names and data types
+    print(df1.dtypes)
+    df1['positive_larger'] = df1['Positive'] > df1['Negative']
+    # Print the first few rows of the DataFrame
+    print(df1.head())
+    # Try scatter plot of `Adj Close`
     fig = px.line(
         df1,
         x="Date",
         y="Price",
-        color="Instrument",
+        color='Instrument',
         title="Stock Prices Over Time",
+        hover_data=["Negative", "Positive"],
         labels={
             "Date": "Date",
             "Price": "Price",
             "Instrument": "Instrument",
-            # "Price_type": "Price Type",
+            "Negative": "Negative %",
+            "Positive": "Positive %",
         },
+        markers=True
     )
+    
     fig.update_xaxes(
-        dtick="D1",  # Specifies that ticks should be shown every 1 day
-        tickformat="%Y-%m-%d",  # Customize date format if needed
+        dtick="D1",  
+        tickformat="%Y-%m-%d",  
     )
-    fig.update_layout(xaxis=dict(range=[start_date, end_date]))
-    # fig.write_html("static/stocks_graph.html")
-    fig.show()
+    return fig.to_html()
 
 
 def News_Cumulative_Diff_Graph(data):
@@ -188,15 +256,16 @@ def get_news(category):
 
 @app.route("/update_graphs")
 def update_graphs():
-    start_date = request.args.get("start")
-    end_date = request.args.get("end")
+    print(request)
+    # start_date = request.args.get("start")
+    # end_date = request.args.get("end")
 
     # Use start_date and end_date in your graph functions (e.g., fetch data within this date range)
     # Example: fetch_data_within_date_range(start_date, end_date)
     # Perform operations to update graphs based on the provided date range
 
     # For example, assuming you have functions to update graphs based on date range
-    weekly_stocks_graph_spy(start_date, end_date)
+    # weekly_stocks_graph_spy(start_date, end_date)
     # Return a response (you can provide some data if needed)
     return jsonify({"message": "Graphs updated successfully"})
 
@@ -207,9 +276,10 @@ def generate_graph():
     end_date = request.args.get("end")
     ticker = request.args.get("ticker")
 
+    print(start_date, end_date, ticker)
     # Call your Python function to generate the graph data
     graph_data = weekly_stocks_graph_spy(start_date, end_date, ticker)
-
+    # lol
     return jsonify(graph_data)
 
 

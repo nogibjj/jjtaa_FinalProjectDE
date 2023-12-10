@@ -1,3 +1,11 @@
-.git*
-**/*.pyc
-.venv/
+.git*          # Exclude Git-related files and directories
+**/*.pyc       # Exclude Python compiled files
+.venv/         # Exclude Python virtual environment directory
+*.tf           # Exclude Terraform configuration files
+*.tfstate      # Exclude Terraform state files
+*.terraform    # Exclude Terraform temporary files
+*.terraform/   # Exclude Terraform temporary directories
+.devcontainer/ 
+.github/       # Exclude GitHub-specific files and workflows
+repeat.sh
+setup.sh

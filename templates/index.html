@@ -5,12 +5,14 @@
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
   <link rel="stylesheet" href="{{ url_for('static', filename='bootstrap/css/bootstrap.min.css') }}">
+  <script src="https://cdn.plot.ly/plotly-latest.min.js"></script>
   <title>News</title>
+  
 </head>
 
-<body class="container mt-4" style="background-image: url('static/images/background.webp'); background-repeat: no-repeat; background-size: cover;">
+<body class="container mt-4" style="background-image: url('static/images/artaic-white-cityscape-cityscape-mist-tile-0305403.jpg'); background-repeat: no-repeat; background-size: cover; background-color: rgba(128, 128, 128, 0.3);">
 
-  <nav class="navbar navbar-expand-lg navbar-light bg-light">
+  <nav class="navbar navbar-expand-lg navbar-light">
     <a class="navbar-brand" href="#">News and Sentiment</a>
     <button class="navbar-toggler" type="button" data-toggle="collapse" data-target="#navbarNav"
       aria-controls="navbarNav" aria-expanded="false" aria-label="Toggle navigation">
@@ -19,10 +21,10 @@
     <div class="collapse navbar-collapse" id="navbarNav">
       <ul class="navbar-nav">
         <li class="nav-item">
-          <a class="nav-link" href="index" target="index">Home</a>
+          <a class="nav-link" href="{{ url_for('index') }}">Home</a>
         </li>
         <li class="nav-item">
-          <a class="nav-link" href="about" target="about">About</a>
+          <a class="nav-link" href="{{ url_for('about') }}">About</a>
         </li>
       </ul>
     </div>
@@ -31,13 +33,13 @@
   <div class="row mt-4">
 
     <!-- Top Headlines Section -->
-    <div class="col-md-6">
+    <div class="col-md-6" style="background-color: rgba(255, 255, 255, 0.1); padding: 15px; border-radius: 10px;">
       <section id="top-headlines">
-        <h2>Today's Top News Headlines</h2>
+        <h2>Interesting News Headlines</h2>
         <div id="news-container" class="mt-3">
           <ul class="list-group">
             {% for row in news %}
-            <li class="list-group-item">
+            <li class="list-group-item" style="background-color: rgba(255, 255, 255, 0.5); padding: 15px; border-radius: 10px;">
               <div class="mb-2">
                 <strong>{{ row.date.strftime('%Y-%m-%d') }}</strong>
                 <span class="ml-2 badge badge-secondary" style="color: black;">{{ row.source }}</span>
@@ -48,41 +50,52 @@
           </ul>
         </div>
       </section>
-    </div>
+    </div>    
   
     <!-- Sentiment Analysis Section -->
     <div class="col-md-6">
       <section id="sentiment-analysis">
         <h2>Sentiment Analysis</h2>
-          <h3>Weekly Stock Prices</h3>
+          <h3>Search Stock Prices</h3>
           <!-- Add date picker inputs and apply button -->
-            <div class="input-group mb-3">
-              <input type="date" id="startDate" class="form-control">
-              <input type="date" id="endDate" class="form-control">
-              <div class="input-group-append">
-                <button class="btn btn-dark" onclick="applyDateRange()">Apply</button>
-              </div>
+          <div class="d-flex justify-content-center align-items-center mt-3">
+            <input type="date" id="startDate" class="form-control" style="height: 38px; width: 33%;">
+            <input type="date" id="endDate" class="form-control" style="height: 38px; width: 33%;">
+            <div class="input-group ml-3">
+                <select class="custom-select form-control" id="tickerDropdown">
+                    <option selected disabled>Select Ticker</option>
+                    <option value="SPY">SPY</option>
+                    <option value="XLC">XLC</option>
+                    <option value="XLY">XLY</option>
+                    <option value="XLP">XLP</option>
+                    <option value="XLE">XLE</option>
+                    <option value="XLF">XLF</option>
+                    <option value="XLV">XLV</option>
+                    <option value="XLI">XLI</option>
+                    <option value="XLRE">XLRE</option>
+                    <option value="XLK">XLK</option>
+                    <option value="XLU">XLU</option>
+                </select>
+                <div class="input-group-append">
+                    <button class="btn btn-dark" onclick="applyDateRange()">Apply</button>
+                </div>
             </div>
-            <div style="overflow: auto; height: 1000px; overflow-x: hidden;">
-            <!-- Existing iframe for stock graph -->
-            <div id="stocks-graph-container" class="mt-3">
+           </div>
+            <div id="stocks-graph-iframe" style="height: 500px; overflow-x: hidden;">
             </div>
             <div class="btn-group mt-3" role="group">
-              <div class="btn-group" role="group">
-                <button type="button" class="btn btn-dark" data-ticker="SPY">SPY</button>
-                <button type="button" class="btn btn-dark" data-ticker="XLC">XLC</button>
-                <button type="button" class="btn btn-dark" data-ticker="XLY">XLY</button>
-                <button type="button" class="btn btn-dark" data-ticker="XLP">XLP</button>
-                <button type="button" class="btn btn-dark" data-ticker="XLE">XLE</button>
-                <button type="button" class="btn btn-dark" data-ticker="XLF">XLF</button>
-                <button type="button" class="btn btn-dark" data-ticker="XLV">XLV</button>
-                <button type="button" class="btn btn-dark" data-ticker="XLI">XLI</button>
-                <button type="button" class="btn btn-dark" data-ticker="XLB">XLB</button>
-                <button type="button" class="btn btn-dark" data-ticker="XLRE">XLRE</button>
-                <button type="button" class="btn btn-dark" data-ticker="XLK">XLK</button>
-                <button type="button" class="btn btn-dark" data-ticker="XLU">XLU</button>
-              </div>
-            </div>
+              <button type="button" class="btn btn-dark" data-ticker="SPY">SPY</button>
+              <button type="button" class="btn btn-dark" data-ticker="XLC">XLC</button>
+              <button type="button" class="btn btn-dark" data-ticker="XLY">XLY</button>
+              <button type="button" class="btn btn-dark" data-ticker="XLP">XLP</button>
+              <button type="button" class="btn btn-dark" data-ticker="XLE">XLE</button>
+              <button type="button" class="btn btn-dark" data-ticker="XLF">XLF</button>
+              <button type="button" class="btn btn-dark" data-ticker="XLV">XLV</button>
+              <button type="button" class="btn btn-dark" data-ticker="XLI">XLI</button>
+              <button type="button" class="btn btn-dark" data-ticker="XLRE">XLRE</button>
+              <button type="button" class="btn btn-dark" data-ticker="XLK">XLK</button>
+              <button type="button" class="btn btn-dark" data-ticker="XLU">XLU</button>
+          </div>
         <div id="sentiment-container" class="mt-3">
         </div>
           <!-- Sentiment graphs will be displayed here -->
@@ -94,31 +107,68 @@
 
   <!-- JavaScript -->
   <script>
+  // lol
+  updateGraph('SPY', getDefaultStartDate(), getDefaultEndDate());
 
   function applyDateRange() {
-    const startDate = document.getElementById('startDate').value;
-    const endDate = document.getElementById('endDate').value;
-    
-    // Perform actions with selected date range
-    // For example: Update the iframe source with new parameters
-    const stocksGraphIframe = document.querySelector('#stocks-graph-container iframe');
-    stocksGraphIframe.src = `{{ url_for('static', filename='stocks_graph.html') }}?start=${startDate}&end=${endDate}`;
+      const startDate = document.getElementById('startDate').value;
+      const endDate = document.getElementById('endDate').value;
+      const selectedTicker = document.getElementById('tickerDropdown').value;
+      if (selectedTicker == "Select Ticker"){
+        alert('Select a ticker');
+      }
+      // Check if both start date, end date, and ticker are selected before updating the iframe
+      if (startDate && endDate && selectedTicker) {
+        if (new Date(startDate) > new Date(endDate)) {
+            // Display alert if start date is greater than end date
+            alert('Start date cannot be greater than end date.');
+        } else if (new Date(endDate) > new Date('2023-12-08')) {
+            alert('No data yet :(');
+        } else {
+            // Update the iframe source with new parameters
+            updateGraph(selectedTicker, startDate, endDate);
+        }
+      } else {
+          // Handle the case where start date, end date, or ticker is not selected
+          alert('Please select start date, end date, and ticker before applying.');
+      }
+  }
+  function renderGraph(data) {
+    const stocksGraphContainer = document.getElementById('stocks-graph-iframe');
+    console.log(data)
+    // Create a new DOMParser
+    // Create a new iframe element
+    const iframe = document.createElement('iframe');
+
+    // Set the srcdoc attribute with the Plotly HTML content
+    iframe.srcdoc = data;
+
+    // Set the iframe's style to fit within the container without scrolling
+    iframe.style.width = '100%';
+    iframe.style.height = '100%'; // Set the iframe height to 100%
+
+    // Clear the container before appending the new content
+    stocksGraphContainer.innerHTML = '';
+
+    // Append the iframe to the container
+    stocksGraphContainer.appendChild(iframe);
+
+    // Set the height of the Plotly content to match the iframe's height
+    iframe.contentDocument.documentElement.style.height = '100%';
+
+
   }
 
-  function renderGraph(data) {
-    const stocksGraphContainer = document.getElementById('stocks-graph-container');
-    
-    // Assuming Plotly is used to render the graph
-    Plotly.newPlot(stocksGraphContainer, data); // Modify this according to your library
-    
-    // If using Chart.js:
-    // const chart = new Chart(stocksGraphContainer, { /* Chart configuration */ });
-  }
-  
-  function updateGraph(ticker) {
-    const startDate = document.getElementById('startDate').value;
-    const endDate = document.getElementById('endDate').value;
-  
+  // send request to update graph 
+  function updateGraph(ticker, startDate, endDate) {
+    startDate = document.getElementById('startDate').value;
+    endDate = document.getElementById('endDate').value;
+
+    // Check if startDate is empty, and if so, use the default start date
+    startDate = startDate.trim() !== '' ? startDate : getDefaultStartDate();
+
+    // Check if endDate is empty, and if so, use the default end date
+    endDate = endDate.trim() !== '' ? endDate : getDefaultEndDate();
     // Make an AJAX request to the Flask backend to get the graph data
     const xhr = new XMLHttpRequest();
     xhr.open('GET', `/generate_graph?start=${startDate}&end=${endDate}&ticker=${ticker}`, true);
@@ -126,9 +176,6 @@
       if (xhr.readyState === XMLHttpRequest.DONE) {
         if (xhr.status === 200) {
           const responseData = JSON.parse(xhr.responseText);
-          // responseData contains the graph data
-          
-          // Call the renderGraph function with the received data
           renderGraph(responseData);
         } else {
           // Handle error
@@ -137,16 +184,42 @@
     };
     xhr.send();
   }
+
+  // Function to update the graph content on the front end
+  function updateGraphContent(graphData) {
+      // Assuming you have a function to update the graph with new data
+      renderGraph(graphData);
+
+      // Add any additional logic you need to update other parts of the UI
+      // For example, if you want to update some text or other elements on the page
+      // document.getElementById('someElement').innerText = 'Updated content';
+  }
   
-  
+
+  // Add event listeners to the ticker buttons
+  const tickerButtons = document.querySelectorAll('#sentiment-analysis .btn[data-ticker]');
+  tickerButtons.forEach(function(button) {
+      button.addEventListener('click', function() {
+          const ticker = button.getAttribute('data-ticker');
+          console.log(ticker);
+          updateGraph(ticker);
+      });
+  });
+
+  function getDefaultStartDate() {
+      return '2023-11-06';
+  }
+
+  function getDefaultEndDate() {
+      return '2023-11-15';
+  }
+
   
   </script>
 
   <script src="https://code.jquery.com/jquery-3.5.1.slim.min.js"></script>
   <script src="https://cdn.jsdelivr.net/npm/@popperjs/core@2.11.6/dist/umd/popper.min.js"></script>
   <script src="https://stackpath.bootstrapcdn.com/bootstrap/4.5.2/js/bootstrap.min.js"></script>
-  <script src="https://cdn.jsdelivr.net/npm/openai/openai.min.js"></script>
-
 
 </body>
 
