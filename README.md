@@ -34,7 +34,8 @@ In the following sections, we will go through each of these components in detail
 <p align="right">(<a href="#readme-top">back to top</a>)</p>
 
 ## Project Architecture:
-![test](https://github.com/nogibjj/jjtaa_FinalProjectDE/assets/104114843/bb04a6cc-cd05-4a20-a17a-519a220d3733)
+![test drawio](https://github.com/nogibjj/jjtaa_FinalProjectDE/assets/104114843/91a67960-d104-40c5-ad3e-5dab40a61934)
+
 
 <p align="right">(<a href="#readme-top">back to top</a>)</p>
 
