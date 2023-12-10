@@ -112,7 +112,7 @@ def get_stocks_for_week():
         return closest_week_data
 
 
-def weekly_stocks_graph_spy(start_date, end_date):
+def weekly_stocks_graph_spy(start_date, end_date, ticker):
     """Saves the graph as an HTML file"""
     # converting the data to a pandas dataframe
     data = fetch_all_stocks()
@@ -131,9 +131,11 @@ def weekly_stocks_graph_spy(start_date, end_date):
     df["Date"] = pd.to_datetime(df["Date"])
 
     df1 = df[df["Price_type"] == "Adj Close"]
-    df1 = df1[df1["Instrument"] == "SPY"]
+    df1 = df1[df1["Instrument"] == ticker]
     if start_date < "2023-11-05":
         start_date = "2023-11-05"
+    if end_date < "2023-11-05":
+        end_date = "2023-11-11"
     df1 = df1[(df1["Date"] >= start_date) & (df1["Date"] <= end_date)]
 
     # # Try scatter plot of `Adj Close`
@@ -142,7 +144,6 @@ def weekly_stocks_graph_spy(start_date, end_date):
         x="Date",
         y="Price",
         color="Instrument",
-        symbol="Price_type",  # This will use different symbols for each 'Price_type'
         title="Stock Prices Over Time",
         labels={
             "Date": "Date",
@@ -207,6 +208,6 @@ def about():
 
 
 if __name__ == "__main__":
-    weekly_stocks_graph_spy("2021-04-01", "2023-04-30")
-    # app.run(debug=True, port=9000)
+    # weekly_stocks_graph_spy("2021-04-01", "2023-04-30", ticker="XLE")
+    app.run(debug=True, port=9000)
     # get_stocks_for_week()
