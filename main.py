@@ -201,6 +201,18 @@ def update_graphs():
     return jsonify({"message": "Graphs updated successfully"})
 
 
+@app.route("/generate_graph", methods=["GET"])
+def generate_graph():
+    start_date = request.args.get("start")
+    end_date = request.args.get("end")
+    ticker = request.args.get("ticker")
+
+    # Call your Python function to generate the graph data
+    graph_data = weekly_stocks_graph_spy(start_date, end_date, ticker)
+
+    return jsonify(graph_data)
+
+
 @app.route("/about", methods=["GET"])
 def about():
     """returns study html template"""

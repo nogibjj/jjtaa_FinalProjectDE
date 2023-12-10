@@ -60,42 +60,29 @@
               <input type="date" id="startDate" class="form-control">
               <input type="date" id="endDate" class="form-control">
               <div class="input-group-append">
-                <button class="btn btn-primary" onclick="applyDateRange()">Apply</button>
+                <button class="btn btn-dark" onclick="applyDateRange()">Apply</button>
               </div>
             </div>
             <div style="overflow: auto; height: 1000px; overflow-x: hidden;">
             <!-- Existing iframe for stock graph -->
             <div id="stocks-graph-container" class="mt-3">
-              <iframe src="{{ url_for('static', filename='stocks_graph.html') }}" width="100%" height="500px" frameborder="0"></iframe>
             </div>
             <div class="btn-group mt-3" role="group">
               <div class="btn-group" role="group">
-                <button type="button" class="btn btn-dark" onclick="updateTicker('SPY')">SPY</button>
-                <button type="button" class="btn btn-dark" onclick="updateTicker('XLC')">XLC</button>
-                <button type="button" class="btn btn-dark" onclick="updateTicker('XLY')">XLY</button>
-                <button type="button" class="btn btn-dark" onclick="updateTicker('XLP')">XLP</button>
-                <button type="button" class="btn btn-dark" onclick="updateTicker('XLE')">XLE</button>
-                <button type="button" class="btn btn-dark" onclick="updateTicker('XLF')">XLF</button>
-                <button type="button" class="btn btn-dark" onclick="updateTicker('XLV')">XLV</button>
-                <button type="button" class="btn btn-dark" onclick="updateTicker('XLI')">XLI</button>
-                <button type="button" class="btn btn-dark" onclick="updateTicker('XLB')">XLB</button>
-                <button type="button" class="btn btn-dark" onclick="updateTicker('XLRE')">XLRE</button>
-                <button type="button" class="btn btn-dark" onclick="updateTicker('XLK')">XLK</button>
-                <button type="button" class="btn btn-dark" onclick="updateTicker('XLU')">XLU</button>
+                <button type="button" class="btn btn-dark" data-ticker="SPY">SPY</button>
+                <button type="button" class="btn btn-dark" data-ticker="XLC">XLC</button>
+                <button type="button" class="btn btn-dark" data-ticker="XLY">XLY</button>
+                <button type="button" class="btn btn-dark" data-ticker="XLP">XLP</button>
+                <button type="button" class="btn btn-dark" data-ticker="XLE">XLE</button>
+                <button type="button" class="btn btn-dark" data-ticker="XLF">XLF</button>
+                <button type="button" class="btn btn-dark" data-ticker="XLV">XLV</button>
+                <button type="button" class="btn btn-dark" data-ticker="XLI">XLI</button>
+                <button type="button" class="btn btn-dark" data-ticker="XLB">XLB</button>
+                <button type="button" class="btn btn-dark" data-ticker="XLRE">XLRE</button>
+                <button type="button" class="btn btn-dark" data-ticker="XLK">XLK</button>
+                <button type="button" class="btn btn-dark" data-ticker="XLU">XLU</button>
               </div>
             </div>
-            <div id="stocks-graph-container" class="mt-3">
-              <iframe src="{{ url_for('static', filename='cumulative_news_data.html') }}" width="100%" height="500px" frameborder="0"></iframe>
-            </div>
-            <div id="stocks-graph-container" class="mt-3">
-              <iframe src="{{ url_for('static', filename='cumulative_news_data.html') }}" width="100%" height="500px" frameborder="0"></iframe>
-            </div>
-        <div class="btn-group mt-3" role="group">
-          <button type="button" class="btn btn-primary" onclick="displaySentiment('business')">Business</button>
-          <button type="button" class="btn btn-primary" onclick="displaySentiment('politics')">Politics</button>
-          <button type="button" class="btn btn-primary" onclick="displaySentiment('technology')">Technology</button>
-          <button type="button" class="btn btn-primary" onclick="displaySentiment('sports')">Sports</button>
-        </div>
         <div id="sentiment-container" class="mt-3">
         </div>
           <!-- Sentiment graphs will be displayed here -->
@@ -118,14 +105,40 @@
     stocksGraphIframe.src = `{{ url_for('static', filename='stocks_graph.html') }}?start=${startDate}&end=${endDate}`;
   }
 
-  function updateTicker(ticker) {
-    const stocksGraphIframe = document.querySelector('#stocks-graph-container iframe');
+  function renderGraph(data) {
+    const stocksGraphContainer = document.getElementById('stocks-graph-container');
+    
+    // Assuming Plotly is used to render the graph
+    Plotly.newPlot(stocksGraphContainer, data); // Modify this according to your library
+    
+    // If using Chart.js:
+    // const chart = new Chart(stocksGraphContainer, { /* Chart configuration */ });
+  }
+  
+  function updateGraph(ticker) {
     const startDate = document.getElementById('startDate').value;
     const endDate = document.getElementById('endDate').value;
-    
-    const url = `{{ url_for('static', filename='stocks_graph.html') }}?start=${startDate}&end=${endDate}&ticker=${ticker}`;
-    stocksGraphIframe.src = url;
+  
+    // Make an AJAX request to the Flask backend to get the graph data
+    const xhr = new XMLHttpRequest();
+    xhr.open('GET', `/generate_graph?start=${startDate}&end=${endDate}&ticker=${ticker}`, true);
+    xhr.onreadystatechange = function () {
+      if (xhr.readyState === XMLHttpRequest.DONE) {
+        if (xhr.status === 200) {
+          const responseData = JSON.parse(xhr.responseText);
+          // responseData contains the graph data
+          
+          // Call the renderGraph function with the received data
+          renderGraph(responseData);
+        } else {
+          // Handle error
+        }
+      }
+    };
+    xhr.send();
   }
+  
+  
   
   </script>
 
