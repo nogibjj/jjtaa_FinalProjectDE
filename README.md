@@ -6,11 +6,14 @@
 - Jeremy Tan
 - Adler Viton
 
+
+# Overview
+
 ## Project Description:
 This project was aimed at incorporating all the skills we learned over this semester in Data Engineering (IDS 706) with Professor Noah Gift. We decided to create a dashboard that would allow users to visualize stock price data and sentiment analysis from news headlines every week. This was done using a data pipeline which was scheduled to retrieve data on a weekly basis from Yahoo Finance API and the Google News API. For this project, we used the following technologies:
 - Python, HTML, CSS, JavaScript
-- Databricks
 - Flask
+- Databricks
 - Docker
 - Azure Web App Services
 - Github Actions
@@ -18,7 +21,26 @@ This project was aimed at incorporating all the skills we learned over this seme
 - IaC (Infrastructure as Code)
 In the following sections, we will go through each of these components in detail.
 
-## Structure of the Repository:
+## Project Architecture:
+<p align = "center"><img width="803" alt="Screenshot 2023-12-10 at 10 51 44 AM" src="https://github.com/nogibjj/aad64_Individual_Project_4/assets/143753050/87e424cc-ca48-4ff3-b23b-9fd8ceddcd60"></p>
+
+## Load Testing:
+Since this project is deployed on Azure Web App Services, we used Locust to perform load testing. Locust is an open-source load testing tool that is used to test the performance of web applications. It is very easy to use and can be run from the command line. The code for the load testing is located in the `locustfile.py` file. The results of the load testing are shown below:
+
+
+# The Application:
+The application is deployed on Azure Web App Services and can be accessed using the following link: [https://stockpricevisualization.azurewebsites.net/](https://stockpricevisualization.azurewebsites.net/)
+
+## Home Page:
+
+<img src = ""></img>
+The home page of the application is a dashboard comprising of some top news headlines retrieved from our dataset. On the right, we have some visualizations of the actual stock price data and sentiment analyis.
+
+## About Page:
+
+<img src = ""></img>
+The about page shows you the contributors of the project, coupled with links to each one's github profile and LinkedIn profile.
+
 
 # Important terms and How we used them:
 
