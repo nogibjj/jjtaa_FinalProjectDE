@@ -50,14 +50,13 @@ The application is deployed on Azure Web App Services and can be accessed using 
 
 ## Home Page:
 
-<img src = ""></img>
+<p align = "center"><img width="1717" alt="image" src="https://github.com/nogibjj/aad64_Pandas-Script/assets/143753050/3df19e2d-bd32-4305-a3eb-a52f5ec8b9b3"></p>
 The home page of the application is a dashboard comprising of some top news headlines retrieved from our dataset. On the right, we have some visualizations of the actual stock price data and sentiment analyis.
+This visualization gives us the sentiment tags when we hover over each data points, with proportions of the positive versus negative sentiment for the news each day. The stock price data is also shown in the form of a line graph, with the closing price of the stock on the y-axis and the date on the x-axis, which is customizable based on user input. Furthermore, users can also decide which index they would like to look at in this plot. 
 
 <p align="right">(<a href="#readme-top">back to top</a>)</p>
 
 ## About Page:
-
-<img src = ""></img>
 The about page shows you the contributors of the project, coupled with links to each one's github profile and LinkedIn profile.
 
 <p align="right">(<a href="#readme-top">back to top</a>)</p>
