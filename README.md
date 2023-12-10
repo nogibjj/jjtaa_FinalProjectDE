@@ -39,12 +39,12 @@ In the following sections, we will go through each of these components in detail
 
 ## Load Testing:
 Since this project is deployed on Azure Web App Services, we used Locust to perform load testing. Locust is an open-source load testing tool that is used to test the performance of web applications. It is very easy to use and can be run from the command line. The code for the load testing is located in the `locustfile.py` file. The results of the load testing are shown below:
-
+![WhatsApp Image 2023-12-10 at 5 45 01 PM](https://github.com/nogibjj/aad64_Pandas-Script/assets/143753050/b7eaded2-a29e-4d7f-a5bb-45db77e3dedc)
 <p align="right">(<a href="#readme-top">back to top</a>)</p>
 
 
 # The Application:
-The application is deployed on Azure Web App Services and can be accessed using the following link: [https://stockpricevisualization.azurewebsites.net/](https://stockpricevisualization.azurewebsites.net/)
+The application is deployed on Azure Web App Services and can be accessed using the following link: [https://stock-news.azurewebsites.net/](https://stock-news.azurewebsites.net/)
 
 <p align="right">(<a href="#readme-top">back to top</a>)</p>
 
