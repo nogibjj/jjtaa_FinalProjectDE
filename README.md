@@ -1,4 +1,9 @@
 # Data Engineering Final Project: Stock Price Visualization and Sentiment Analysis
+[![Install](https://github.com/nogibjj/jjtaa_FinalProjectDE/actions/workflows/install.yml/badge.svg)](https://github.com/nogibjj/jjtaa_FinalProjectDE/actions/workflows/install.yml)
+[![Format](https://github.com/nogibjj/jjtaa_FinalProjectDE/actions/workflows/format.yml/badge.svg)](https://github.com/nogibjj/jjtaa_FinalProjectDE/actions/workflows/format.yml)
+[![Lint](https://github.com/nogibjj/jjtaa_FinalProjectDE/actions/workflows/lint.yml/badge.svg)](https://github.com/nogibjj/jjtaa_FinalProjectDE/actions/workflows/lint.yml)
+[![Test](https://github.com/nogibjj/jjtaa_FinalProjectDE/actions/workflows/test.yml/badge.svg)](https://github.com/nogibjj/jjtaa_FinalProjectDE/actions/workflows/test.yml)
+
 ## Team Members:
 - Javier Cervantes
 - Aarya Desai
