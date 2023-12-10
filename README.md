@@ -34,7 +34,7 @@ In the following sections, we will go through each of these components in detail
 <p align="right">(<a href="#readme-top">back to top</a>)</p>
 
 ## Project Architecture:
-<p align = "center"><img width="803" alt="Screenshot 2023-12-10 at 10 51 44 AM" src="https://github.com/nogibjj/aad64_Individual_Project_4/assets/143753050/87e424cc-ca48-4ff3-b23b-9fd8ceddcd60"></p>
+![test](https://github.com/nogibjj/jjtaa_FinalProjectDE/assets/104114843/bb04a6cc-cd05-4a20-a17a-519a220d3733)
 
 <p align="right">(<a href="#readme-top">back to top</a>)</p>
 
