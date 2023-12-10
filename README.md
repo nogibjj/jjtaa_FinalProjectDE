@@ -8,11 +8,11 @@
 
 
 # Overview
+<a name="readme-top"></a>
 
 ## Project Description:
 This project was aimed at incorporating all the skills we learned over this semester in Data Engineering (IDS 706) with Professor Noah Gift. We decided to create a dashboard that would allow users to visualize stock price data and sentiment analysis from news headlines every week. This was done using a data pipeline which was scheduled to retrieve data on a weekly basis from Yahoo Finance API and the Google News API. For this project, we used the following technologies:
-- [![Next][Next.js]][Next.js-url] 
-Python, HTML, CSS, JavaScript
+- Python, HTML, CSS, JavaScript
 - Flask
 - Databricks
 - Docker
@@ -21,6 +21,8 @@ Python, HTML, CSS, JavaScript
 - CI/CD Pipelines
 - IaC (Infrastructure as Code)
 In the following sections, we will go through each of these components in detail.
+
+![ChatGPT](https://img.shields.io/badge/chatGPT-74aa9c?style=for-the-badge&logo=openai&logoColor=white)
 
 <p align="right">(<a href="#readme-top">back to top</a>)</p>
 
