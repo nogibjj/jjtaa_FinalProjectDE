@@ -1,4 +1,12 @@
 # Data Engineering Final Project: Stock Price Visualization and Sentiment Analysis
+[![Install](https://github.com/nogibjj/jjtaa_FinalProjectDE/actions/workflows/install.yml/badge.svg)](https://github.com/nogibjj/jjtaa_FinalProjectDE/actions/workflows/install.yml)
+[![Format](https://github.com/nogibjj/jjtaa_FinalProjectDE/actions/workflows/format.yml/badge.svg)](https://github.com/nogibjj/jjtaa_FinalProjectDE/actions/workflows/format.yml)
+[![Lint](https://github.com/nogibjj/jjtaa_FinalProjectDE/actions/workflows/lint.yml/badge.svg)](https://github.com/nogibjj/jjtaa_FinalProjectDE/actions/workflows/lint.yml)
+[![Test](https://github.com/nogibjj/jjtaa_FinalProjectDE/actions/workflows/test.yml/badge.svg)](https://github.com/nogibjj/jjtaa_FinalProjectDE/actions/workflows/test.yml)
+
+
+## [YouTube Demo Video](https://youtu.be/FHHl5CH5i4w)
+
 ## Team Members:
 - Javier Cervantes
 - Aarya Desai
@@ -28,31 +36,36 @@ In the following sections, we will go through each of these components in detail
 <p align="right">(<a href="#readme-top">back to top</a>)</p>
 
 ## Project Architecture:
-<p align = "center"><img width="803" alt="Screenshot 2023-12-10 at 10 51 44 AM" src="https://github.com/nogibjj/aad64_Individual_Project_4/assets/143753050/87e424cc-ca48-4ff3-b23b-9fd8ceddcd60"></p>
+![test drawio](https://github.com/nogibjj/jjtaa_FinalProjectDE/assets/104114843/91a67960-d104-40c5-ad3e-5dab40a61934)
+
 
 <p align="right">(<a href="#readme-top">back to top</a>)</p>
 
 ## Load Testing:
-Since this project is deployed on Azure Web App Services, we used Locust to perform load testing. Locust is an open-source load testing tool that is used to test the performance of web applications. It is very easy to use and can be run from the command line. The code for the load testing is located in the `locustfile.py` file. The results of the load testing are shown below:
+Since this project is deployed on Azure Web App Services, we used Azure load testing, which gave us information about the maximum number of virtual users we can host, response time, requests/second, and total errors. The results of the load testing are shown below:
 
+<img width="1682" alt="Screenshot 2023-12-10 at 7 28 18 PM" src="https://github.com/nogibjj/jjtaa_FinalProjectDE/assets/36715338/cb37bf8b-a4af-46bd-85df-4138048fe122">
+
+![Image 2023-12-10 at 5 45 01 PM](https://github.com/nogibjj/aad64_Pandas-Script/assets/143753050/b7eaded2-a29e-4d7f-a5bb-45db77e3dedc)
 <p align="right">(<a href="#readme-top">back to top</a>)</p>
+Establishing a baseline with a test load of 90 requests per second allowed us to gauge the baseline performance of our web app under what we consider "normal" traffic conditions. Once this baseline was confirmed, we deliberately pushed the boundaries by subjecting our website to a simulated surge in users. Although we capped the testing at 3000 requests per second, partly due to cost considerations, the results were exceptional. Even with only 4 additional instances, our web app demonstrated resilience, effortlessly handling the increased load. Furthermore, our validation indicates that by scaling up the number of allowed instances, our web app could comfortably accommodate up to 10,000 requests per second. Impressively, our system can efficiently serve at least 500 concurrent users, consistently delivering responses in less than 1 second. Notably, the error rate remained low, with only 4 errors recorded for every 1000 requests.
 
+In summary, the load testing not only confirmed the reliability of our web app under realistic conditions but also showcased its potential for seamless scalability to meet even higher demands, reinforcing our confidence in its performance capabilities.
 
 # The Application:
-The application is deployed on Azure Web App Services and can be accessed using the following link: [https://stockpricevisualization.azurewebsites.net/](https://stockpricevisualization.azurewebsites.net/)
+The application is deployed on Azure Web App Services and can be accessed using the following link: [https://stock-news.azurewebsites.net/](https://stock-news.azurewebsites.net/)
 
 <p align="right">(<a href="#readme-top">back to top</a>)</p>
 
 ## Home Page:
 
-<img src = ""></img>
+<p align = "center"><img width="1717" alt="image" src="https://github.com/nogibjj/aad64_Pandas-Script/assets/143753050/3df19e2d-bd32-4305-a3eb-a52f5ec8b9b3"></p>
 The home page of the application is a dashboard comprising of some top news headlines retrieved from our dataset. On the right, we have some visualizations of the actual stock price data and sentiment analyis.
+This visualization gives us the sentiment tags when we hover over each data points, with proportions of the positive versus negative sentiment for the news each day. The stock price data is also shown in the form of a line graph, with the closing price of the stock on the y-axis and the date on the x-axis, which is customizable based on user input. Furthermore, users can also decide which index they would like to look at in this plot. 
 
 <p align="right">(<a href="#readme-top">back to top</a>)</p>
 
 ## About Page:
-
-<img src = ""></img>
 The about page shows you the contributors of the project, coupled with links to each one's github profile and LinkedIn profile.
 
 <p align="right">(<a href="#readme-top">back to top</a>)</p>
@@ -61,9 +74,11 @@ The about page shows you the contributors of the project, coupled with links to 
 # Important terms and How we used them:
 
 ## Databricks
-The foundation of this project was built on Databricks. Databricks is a unified data analytics platform that provides a collaborative workspace for data scientists, engineers, and decision-makers to explore, experiment, and share projects. We used Databricls to create a data pipeline that would retrieve data from Yahoo Finance API and the Google News API. The data pipeline was scheduled to run every week. The data was then stored in a database on Databricks.
+The DB microservice of this project was built on Databricks. Databricks is a unified data analytics platform that provides a collaborative workspace for data scientists, engineers, and decision-makers to explore, experiment, and share projects. We used Databricls to create a data pipeline that would retrieve data from Yahoo Finance API and the Google News API. We load the data in using PySpark, then transform the data using sentiment analysis with Hugging Face, and load it in as a delta table in our Databricks Catalog. The data pipeline was scheduled to run every week. The data was then stored in a database on Databricks.
 
 We also used Databricks notebooks to first test our code before deploying it to the pipeline, which was very useful in a team of 5, to ensure we were all on the same page and understood how to data was being retrieved, stored and worked with.
+
+Our web app interfaces with the Databricks API to pull data to serve to the user based on provided input. 
 
 <p align="right">(<a href="#readme-top">back to top</a>)</p>
 
@@ -79,12 +94,27 @@ Docker is a set of platform as a service products that use OS-level virtualizati
 
 For this project, we used Docker to containerize our application. This was done by creating a Dockerfile which contains all the commands that are required to build the image. The Dockerfile is located in the root directory of this repository. 
 
+You can build an image as follows:
+1. `docker login --username <username>`
+2. `docker build -t <image name>`
+3. `docker push <image name>`
+
 <p align="right">(<a href="#readme-top">back to top</a>)</p>
 
 ## Azure Web App Services
 Azure App Service is a fully managed web hosting service for building web apps, mobile back ends, and RESTful APIs. It provides out-of-the-box authentication and authorization support, lets you easily add push notifications to your app, and provides production debugging tools. Azure App Service enables you to build and host web apps, mobile back ends, and RESTful APIs in the programming language of your choice without managing infrastructure. It offers auto-scaling and high availability, supports both Windows and Linux, and enables automated deployments from GitHub, Azure DevOps, or any Git repo.
 
 For this project, we used Azure Web App Services to deploy our application. This was done by creating a resource group and a web app service on Azure. We then used the Azure CLI to deploy our application to the web app service. Furthermore, using IaC (Infrastructure as Code), we were able to automate the process of creating the resource group and web app service. The code for this is located in the `main.tf` file.
+
+### Logging 
+We turned on logging for the Azure Web App which comes with the service. You can see the logs enabled here:
+
+<img width="705" alt="Screenshot 2023-12-10 at 8 23 48 PM" src="https://github.com/nogibjj/jjtaa_FinalProjectDE/assets/36715338/3fb51ff6-6fa2-4ec7-9001-fb86a46f4ab7">
+
+We are able to pull them by connecting to a FTP to download our logs. This helped in debugging the contianer deployment when intially deploying with terraform as no much documentation was found in deploying a web app with a dockerhub image via Terraform.
+  
+### Distroless Docker Image
+We use a distroless container image to build our overall docker image for our web app. This can be seen in the `DockerFile` in our repo.
 
 <p align="right">(<a href="#readme-top">back to top</a>)</p>
 
@@ -98,6 +128,29 @@ This repository contains a CI/CD pipeline that is triggered by a push to the mai
 ## Infrastructure as Code
 Infrastructure as Code (IaC) is the process of managing and provisioning computer data centers through machine-readable definition files, rather than physical hardware configuration or interactive configuration tools. The IT infrastructure managed by this process comprises both physical equipment, such as bare-metal servers, as well as virtual machines, and associated configuration resources. The definitions may be in a version control system. It can use either scripts or declarative definitions, rather than manual processes, but the term is more often used to promote declarative approaches.
 
-For this project, we used Terraform to define our infrastructure. Terraform is an open-source infrastructure as code software tool that enables you to safely and predictably create, change, and improve infrastructure. Terraform can manage existing and popular service providers as well as custom in-house solutions.
+For this project, we used Terraform to define our infrastructure. Terraform is an open-source infrastructure as code software tool that enables you to safely and predictably create, change, and improve infrastructure. Terraform can manage existing and popular service providers as well as custom in-house solutions. The `main.tf` file holds the IAC code for this project. To run the code you would need to do:
+1. `terraform init`
+2. `terraform plan`
+3. `terraform apply`
 
 <p align="right">(<a href="#readme-top">back to top</a>)</p>
+
+## Misc 
+### AI Tools 
+1. Github Copilot
+2. OpenAI ChatGPT
+3. Databricks Assitant
+
+All three were used together to build the components of our project. Copilot and ChatGPT were used to help modify our HTML templates as we lacked experience in this field. We used Databricks Assitant to help us wiih the internal pipeline development such as how to modify our notebooks to work correcltly in tandem with each other.
+
+<p align="right">(<a href="#readme-top">back to top</a>)</p>
+
+## References
+1. https://github.com/nogibjj/python-template
+2. https://learn.microsoft.com/en-us/azure/developer/terraform/overview
+3. https://www.databricks.com/product/databricks-sql
+4. https://flask.palletsprojects.com/en/3.0.x/
+5. https://huggingface.co/docs/transformers/index
+6. https://learn.microsoft.com/en-us/azure/load-testing/quickstart-create-and-run-load-test?tabs=portal
+7. https://github.com/jaxonyue/DE-Group-Project/tree/main
+8. https://github.com/nogibjj/DE_Final_Project_Nutrition_Guide_Food

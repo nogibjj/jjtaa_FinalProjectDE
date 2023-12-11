@@ -18,7 +18,7 @@ Werkzeug==2.2.2
 requests
 #datascience
 pandas
-counterdocker push jeremymtan/definal 
+counter
 plotly
 transformers
 tensorflow

@@ -8,9 +8,11 @@ from datetime import datetime, timedelta
 import pytz
 import pandas as pd
 import plotly.express as px
-import numpy as np
+
+# import numpy as np
 from collections import Counter
-import plotly.graph_objects as go
+
+# import plotly.graph_objects as go
 
 load_dotenv()
 
@@ -35,12 +37,14 @@ def fetch_news():
         access_token=access_token,
     ) as connection:
         c = connection.cursor()
-        c.execute("""
+        c.execute(
+            """
                   SELECT *
                   FROM default.news
                   ORDER BY RAND()
                   LIMIT 5;
-                  """)
+                  """
+        )
         result = c.fetchall()
         c.close()
         return result
@@ -116,7 +120,8 @@ def get_stocks_for_week():
         closest_week_data = [
             entry
             for entry in result
-            if week_start <= entry["Date"].astimezone(pytz.UTC) <= week_end
+            if week_start <= entry["Date"].astimezone(pytz.UTC
+                                                      ) <= week_end
         ]
         return closest_week_data
 
@@ -142,7 +147,7 @@ def weekly_stocks_graph_spy(start_date, end_date, ticker):
             "Date": row.date,
             "Source": row.source,
             "Text": row.text,
-            "Sentiment": row.Sentiment
+            "Sentiment": row.Sentiment,
         }
         for row in news_data
     ]
@@ -175,9 +180,10 @@ def weekly_stocks_graph_spy(start_date, end_date, ticker):
     if end_date < "2023-11-05":
         end_date = "2023-11-11"
 
-    result_df = result_df[(result_df["Date"] >= start_date) & 
-                          (result_df["Date"] <= end_date)]
-    
+    result_df = result_df[
+        (result_df["Date"] >= start_date) & (result_df["Date"] <= end_date)
+    ]
+
     result_df_melted = pd.melt(
         result_df,
         id_vars=["Date"],
@@ -185,7 +191,6 @@ def weekly_stocks_graph_spy(start_date, end_date, ticker):
         var_name="Sentiment",
         value_name="Count",
     )
-
 
     df = pd.DataFrame(data_list)
 
@@ -196,12 +201,17 @@ def weekly_stocks_graph_spy(start_date, end_date, ticker):
     df1 = df1[df1["Instrument"] == ticker]
     df1 = df1[(df1["Date"] >= start_date) & (df1["Date"] <= end_date)]
     print(df1)
-    sentiment_percentages = result_df_melted.pivot(index="Date", columns="Sentiment", values="Count")
-    df1 = pd.merge(df1, sentiment_percentages, how="left", left_on="Date", right_index=True)
+    sentiment_percentages = result_df_melted.pivot(
+        index="Date", columns="Sentiment", values="Count"
+    )
+    df1 = pd.merge(
+        df1, sentiment_percentages, how="left", left_on="Date", 
+        right_index=True
+    )
     print(df1.columns)
     # Print column names and data types
     print(df1.dtypes)
-    df1['positive_larger'] = df1['Positive'] > df1['Negative']
+    df1["positive_larger"] = df1["Positive"] > df1["Negative"]
     # Print the first few rows of the DataFrame
     print(df1.head())
     # Try scatter plot of `Adj Close`
@@ -209,7 +219,7 @@ def weekly_stocks_graph_spy(start_date, end_date, ticker):
         df1,
         x="Date",
         y="Price",
-        color='Instrument',
+        color="Instrument",
         title="Stock Prices Over Time",
         hover_data=["Negative", "Positive"],
         labels={
@@ -219,12 +229,12 @@ def weekly_stocks_graph_spy(start_date, end_date, ticker):
             "Negative": "Negative %",
             "Positive": "Positive %",
         },
-        markers=True
+        markers=True,
     )
-    
+
     fig.update_xaxes(
-        dtick="D1",  
-        tickformat="%Y-%m-%d",  
+        dtick="D1",
+        tickformat="%Y-%m-%d",
     )
     return fig.to_html()
 
@@ -260,7 +270,8 @@ def update_graphs():
     # start_date = request.args.get("start")
     # end_date = request.args.get("end")
 
-    # Use start_date and end_date in your graph functions (e.g., fetch data within this date range)
+    # Use start_date and end_date in your graph functions 
+    # (e.g., fetch data within this date range)
     # Example: fetch_data_within_date_range(start_date, end_date)
     # Perform operations to update graphs based on the provided date range
 

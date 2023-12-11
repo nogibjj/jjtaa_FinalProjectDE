@@ -69,7 +69,8 @@ def create_news_df():
 
     result_df["Cumulative_Difference"] = result_df["Pos-Neg"].cumsum()
 
-    # Calculate the ratio of cumulative positive to the sum of cumulative positive and cumulative negative
+    # Calculate the ratio of cumulative positive to 
+    # the sum of cumulative positive and cumulative negative
     result_df["Cumulative_Positive_Ratio"] = result_df["Cumulative_Positive"] / (
         result_df["Cumulative_Positive"] + result_df["Cumulative_Negative"]
     )
