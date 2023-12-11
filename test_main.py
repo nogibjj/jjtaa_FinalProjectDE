@@ -3,10 +3,6 @@ Test goes here
 
 """
 import os
-import requests
-from dotenv import load_dotenv
-
-load_dotenv()
 
 # Azure Databricks API token
 # DATABRICKS = os.getenv("DATABRICKS")
