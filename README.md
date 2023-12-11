@@ -41,9 +41,14 @@ In the following sections, we will go through each of these components in detail
 
 ## Load Testing:
 Since this project is deployed on Azure Web App Services, we used Azure load testing, which gave us information about the maximum number of virtual users we can host, response time, requests/second, and total errors. The results of the load testing are shown below:
-![WhatsApp Image 2023-12-10 at 5 45 01 PM](https://github.com/nogibjj/aad64_Pandas-Script/assets/143753050/b7eaded2-a29e-4d7f-a5bb-45db77e3dedc)
+
+<img width="1682" alt="Screenshot 2023-12-10 at 7 28 18 PM" src="https://github.com/nogibjj/jjtaa_FinalProjectDE/assets/36715338/cb37bf8b-a4af-46bd-85df-4138048fe122">
+
+![Image 2023-12-10 at 5 45 01 PM](https://github.com/nogibjj/aad64_Pandas-Script/assets/143753050/b7eaded2-a29e-4d7f-a5bb-45db77e3dedc)
 <p align="right">(<a href="#readme-top">back to top</a>)</p>
-Overall, the load testing on Azure Web App Services provided valuable insights into the performance and scalability of the application. It helps us ensure that the application can handle the expected load and deliver a smooth user experience. We stopped at 3000 requests/s due to the cost limitations, but also because we validated tha the web app can handle up to 3000 requests when only spawning 4 extra instances. If we were to scale up the number of allowed isntances, we could easily reach 10000 requests per second. 
+Establishing a baseline with a test load of 90 requests per second allowed us to gauge the baseline performance of our web app under what we consider "normal" traffic conditions. Once this baseline was confirmed, we deliberately pushed the boundaries by subjecting our website to a simulated surge in users. Although we capped the testing at 3000 requests per second, partly due to cost considerations, the results were exceptional. Even with only 4 additional instances, our web app demonstrated resilience, effortlessly handling the increased load. Furthermore, our validation indicates that by scaling up the number of allowed instances, our web app could comfortably accommodate up to 10,000 requests per second. Impressively, our system can efficiently serve at least 500 concurrent users, consistently delivering responses in less than 1 second. Notably, the error rate remained impressively low, with only 4 errors recorded for every 100 requests.
+
+In summary, the load testing not only confirmed the reliability of our web app under realistic conditions but also showcased its potential for seamless scalability to meet even higher demands, reinforcing our confidence in its performance capabilities.
 
 # The Application:
 The application is deployed on Azure Web App Services and can be accessed using the following link: [https://stock-news.azurewebsites.net/](https://stock-news.azurewebsites.net/)
@@ -67,7 +72,7 @@ The about page shows you the contributors of the project, coupled with links to 
 # Important terms and How we used them:
 
 ## Databricks
-The DB microservice of this project was built on Databricks. Databricks is a unified data analytics platform that provides a collaborative workspace for data scientists, engineers, and decision-makers to explore, experiment, and share projects. We used Databricls to create a data pipeline that would retrieve data from Yahoo Finance API and the Google News API. The data pipeline was scheduled to run every week. The data was then stored in a database on Databricks.
+The DB microservice of this project was built on Databricks. Databricks is a unified data analytics platform that provides a collaborative workspace for data scientists, engineers, and decision-makers to explore, experiment, and share projects. We used Databricls to create a data pipeline that would retrieve data from Yahoo Finance API and the Google News API. We load the data in using PySpark, then transform the data using sentiment analysis with Hugging Face, and load it in as a delta table in our Databricks Catalog. The data pipeline was scheduled to run every week. The data was then stored in a database on Databricks.
 
 We also used Databricks notebooks to first test our code before deploying it to the pipeline, which was very useful in a team of 5, to ensure we were all on the same page and understood how to data was being retrieved, stored and worked with.
 
@@ -99,6 +104,13 @@ Azure App Service is a fully managed web hosting service for building web apps, 
 
 For this project, we used Azure Web App Services to deploy our application. This was done by creating a resource group and a web app service on Azure. We then used the Azure CLI to deploy our application to the web app service. Furthermore, using IaC (Infrastructure as Code), we were able to automate the process of creating the resource group and web app service. The code for this is located in the `main.tf` file.
 
+### Logging 
+We turned on logging for the Azure Web App which comes with the service. You can find the logs here:
+http://stock-news.scm.azurewebsites.net/api/dump
+  
+### Distroless Docker Image
+We use a distroless container image to build our overall docker image for our web app. This can be seen in the `DockerFile` in our repo.
+
 <p align="right">(<a href="#readme-top">back to top</a>)</p>
 
 ## CI/CD Pipeline
@@ -118,6 +130,15 @@ For this project, we used Terraform to define our infrastructure. Terraform is a
 
 <p align="right">(<a href="#readme-top">back to top</a>)</p>
 
+## Misc 
+### AI Tools 
+1. Github Copilot
+2. OpenAI ChatGPT
+3. Databricks Assitant
+All three were used together to build the components of our project. Copilot and ChatGPT were used to help modify our HTML templates as we lacked experience in this field. We used Databricks Assitant to help us wiih the internal pipeline development such as how to modify our notebooks to work correcltly in tandem with each other.
+
+<p align="right">(<a href="#readme-top">back to top</a>)</p>
+
 ## References
 1. https://github.com/nogibjj/python-template
 2. https://learn.microsoft.com/en-us/azure/developer/terraform/overview
@@ -126,3 +147,4 @@ For this project, we used Terraform to define our infrastructure. Terraform is a
 5. https://huggingface.co/docs/transformers/index
 6. https://learn.microsoft.com/en-us/azure/load-testing/quickstart-create-and-run-load-test?tabs=portal
 7. https://github.com/jaxonyue/DE-Group-Project/tree/main
+8. https://github.com/nogibjj/DE_Final_Project_Nutrition_Guide_Food
