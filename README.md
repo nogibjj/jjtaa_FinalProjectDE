@@ -46,7 +46,7 @@ Since this project is deployed on Azure Web App Services, we used Azure load tes
 
 ![Image 2023-12-10 at 5 45 01 PM](https://github.com/nogibjj/aad64_Pandas-Script/assets/143753050/b7eaded2-a29e-4d7f-a5bb-45db77e3dedc)
 <p align="right">(<a href="#readme-top">back to top</a>)</p>
-Establishing a baseline with a test load of 90 requests per second allowed us to gauge the baseline performance of our web app under what we consider "normal" traffic conditions. Once this baseline was confirmed, we deliberately pushed the boundaries by subjecting our website to a simulated surge in users. Although we capped the testing at 3000 requests per second, partly due to cost considerations, the results were exceptional. Even with only 4 additional instances, our web app demonstrated resilience, effortlessly handling the increased load. Furthermore, our validation indicates that by scaling up the number of allowed instances, our web app could comfortably accommodate up to 10,000 requests per second. Impressively, our system can efficiently serve at least 500 concurrent users, consistently delivering responses in less than 1 second. Notably, the error rate remained impressively low, with only 4 errors recorded for every 100 requests.
+Establishing a baseline with a test load of 90 requests per second allowed us to gauge the baseline performance of our web app under what we consider "normal" traffic conditions. Once this baseline was confirmed, we deliberately pushed the boundaries by subjecting our website to a simulated surge in users. Although we capped the testing at 3000 requests per second, partly due to cost considerations, the results were exceptional. Even with only 4 additional instances, our web app demonstrated resilience, effortlessly handling the increased load. Furthermore, our validation indicates that by scaling up the number of allowed instances, our web app could comfortably accommodate up to 10,000 requests per second. Impressively, our system can efficiently serve at least 500 concurrent users, consistently delivering responses in less than 1 second. Notably, the error rate remained low, with only 4 errors recorded for every 1000 requests.
 
 In summary, the load testing not only confirmed the reliability of our web app under realistic conditions but also showcased its potential for seamless scalability to meet even higher demands, reinforcing our confidence in its performance capabilities.
 
@@ -105,8 +105,11 @@ Azure App Service is a fully managed web hosting service for building web apps, 
 For this project, we used Azure Web App Services to deploy our application. This was done by creating a resource group and a web app service on Azure. We then used the Azure CLI to deploy our application to the web app service. Furthermore, using IaC (Infrastructure as Code), we were able to automate the process of creating the resource group and web app service. The code for this is located in the `main.tf` file.
 
 ### Logging 
-We turned on logging for the Azure Web App which comes with the service. You can find the logs here:
-http://stock-news.scm.azurewebsites.net/api/dump
+We turned on logging for the Azure Web App which comes with the service. You can see the logs enabled here:
+
+<img width="705" alt="Screenshot 2023-12-10 at 8 23 48 PM" src="https://github.com/nogibjj/jjtaa_FinalProjectDE/assets/36715338/3fb51ff6-6fa2-4ec7-9001-fb86a46f4ab7">
+
+We are able to pull them by connecting to a FTP to download our logs. This helped in debugging the contianer deployment when intially deploying with terraform as no much documentation was found in deploying a web app with a dockerhub image via Terraform.
   
 ### Distroless Docker Image
 We use a distroless container image to build our overall docker image for our web app. This can be seen in the `DockerFile` in our repo.
@@ -135,6 +138,7 @@ For this project, we used Terraform to define our infrastructure. Terraform is a
 1. Github Copilot
 2. OpenAI ChatGPT
 3. Databricks Assitant
+
 All three were used together to build the components of our project. Copilot and ChatGPT were used to help modify our HTML templates as we lacked experience in this field. We used Databricks Assitant to help us wiih the internal pipeline development such as how to modify our notebooks to work correcltly in tandem with each other.
 
 <p align="right">(<a href="#readme-top">back to top</a>)</p>
